@@ -46,3 +46,11 @@ body {
   outline: 1px solid blue;
   display: inline-block;
 }
+
+.snake-cell {
+  background-color: violet;
+}
+
+.food {
+  background-color: red;
+}

@@ -12,7 +12,7 @@ export default function Board() {
             {board.map((row, index)=>(
                 <div key={index} className="row">{
                     row.map((cell, cell_index)=>(
-                        <div key={cell_index} className="cell"></div>
+                        <div key={cell_index} className={`cell ${true? 'food': ''}`}></div>
                     ))
                 }
                 </div>
