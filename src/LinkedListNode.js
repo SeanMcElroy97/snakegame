@@ -1,6 +1,9 @@
 export default class LinkedListNode{
-    constructor(val){
-        this.value=val;
+    constructor(row, col){
+        
+        this.lerow =row;
+        this.lecolumn= col;
+        
         this.next=null;
     }
 }

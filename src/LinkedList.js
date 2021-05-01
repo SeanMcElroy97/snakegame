@@ -1,7 +1,7 @@
 import LinkedListNode from './LinkedListNode'
 export default class LinkedList{
-    constructor(val){
-        const node = new LinkedListNode(val);
+    constructor(row, col){
+        const node = new LinkedListNode(row,col);
         this.head=node;
         this.tail=node;
     }
