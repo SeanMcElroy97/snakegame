@@ -1,23 +1,34 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import LinkedList from '../LinkedList'
 
-export default function Board() {
+export default function Board({score, setScore}) {
     const [board, setBoard]= useState(makeBoard(10))
     const [snakeCells, setSnakeCells]= useState(new Set(['33']));
     const [snake, setSnake] = useState(new LinkedList(3,3));
     const [foodCell, setFoodCell] = useState("36")
+    const [currentDirection , setCurrentDirection]=useState("ArrowRight")
+    
     let gameOver=false;
     let speed = 1000;
 
-    useEffect(()=>{
-        setInterval(()=>{
-            slither()
-        }, speed)
-    }, [])
 
-   
+    useEffect(() => {
+        window.addEventListener('keydown', e => {
+            // ArrowUp
+            // ArrowDown
+            // ArrowLeft
+            // ArrowRight
+            console.log(e.key)
+            if (e.key=="ArrowUp" || e.key=="ArrowDown" || e.key=="ArrowLeft" || e.key=="ArrowRight"){
+                setCurrentDirection(e.key)
+            }
+        });
+        }, []);
 
-    let currentDirection="ArrowRight";
+    useInterval(() => {
+        slither();
+      }, 1000);
+
 
     const slither = ()=>{
         let currentSnakeHead = snake.head;
@@ -35,10 +46,11 @@ export default function Board() {
             currentSnakeHead.lerow=currentSnakeHead.lerow-1
         }
         
-        if (currentSnakeHead.lecolumn>9 || currentSnakeHead.lerow>9 || currentSnakeHead.lecolumn<0 || currentSnakeHead.lerow<0 || snakeCells.has(currentSnakeHead.lerow+""+currentSnakeHead.lecolumn)){
+        if (currentSnakeHead.lecolumn>9 || currentSnakeHead.lerow>9 || currentSnakeHead.lecolumn<0 || currentSnakeHead.lerow<0){
             alert('gameover')
         }
 
+        console.log("current_dir" + currentDirection)
         setSnakeCells(new Set([currentSnakeHead.lerow+""+currentSnakeHead.lecolumn]))
 
         console.log(snakeCells)
@@ -50,21 +62,11 @@ export default function Board() {
     function eatFood(){
         // Grow snake
         console.log("Eat food")
+        setScore(score+1)
         generateFood()
     }
 
-    // Handle key press
-    useEffect(() => {
-        window.addEventListener('keydown', e => {
-            // ArrowUp
-            // ArrowDown
-            // ArrowLeft
-            // ArrowRight
-            if (e.key=="ArrowUp" || e.key=="ArrowDown" || e.key=="ArrowLeft" || e.key=="ArrowRight"){
-                currentDirection=e.key
-            }
-        });
-        }, []);
+
 
     function generateFood(){
         let randomrow=Math.floor(Math.random() * 10);
@@ -107,4 +109,24 @@ const makeBoard = size =>{
         board.push(currentRow)
     }
     return board
+}
+
+export function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
 }
