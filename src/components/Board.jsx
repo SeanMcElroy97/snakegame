@@ -30,36 +30,16 @@ export default function Board({score, setScore, endGame}) {
       }, speed);
 
 
-    const slither = ()=>{
-
-        
-        let newHeadRow=snake.head.lerow;
-        let newHeadCol=snake.head.lecolumn;
-
-        if (currentDirection=="ArrowRight"){
-            newHeadCol+=1
-        }
-
-        const nextSnakeHead = new LinkedListNode(newHeadRow, newHeadCol)
-
-
-        
-        if(nextSnakeHead.lerow+""+nextSnakeHead.lecolumn == foodCell){
-            eatFood()
-            growSnake(snake.tail.lerow, snake.tail.lecolumn)
-        }
-
-
-        snake.head=nextSnakeHead
-        
-        const scells = new Set(snakeCells);
-        scells.delete(snake.tail.lerow+""+snake.tail.lecolumn)
-        scells.add(snake.head.lerow+""+snake.head.lecolumn);
-        setSnakeCells(scells)
-
-        snake.tail = snake.tail.next;
-        if (snake.tail === null) snake.tail = snake.head;
+    function slither(){
         console.log(snake)
+        let current = snake.head
+        const snakeCs= new Set()
+        while (current!=null){
+            snakeCs.add(current.lerow+""+current.lecolumn)
+            current=current.next
+        }
+
+        setSnakeCells(snakeCs)
     }
 
 
@@ -67,10 +47,9 @@ export default function Board({score, setScore, endGame}) {
         console.log("r"+row + "c"+col)
         const nuevoSnakeTail =new LinkedListNode(row, col)
         const currentTail = snake.tail;
-        snake.tail = nuevoSnakeTail;
-        snake.tail.next = currentTail;
-    
-        snakeCells.add(nuevoSnakeTail.lerow+""+nuevoSnakeTail.lecolumn);
+        currentTail.next=nuevoSnakeTail;
+        snake.tail=nuevoSnakeTail
+        // console.log(snake)
         
     }
 
@@ -97,6 +76,7 @@ export default function Board({score, setScore, endGame}) {
 
     return (
         <div className="boardContainer">
+            <button onClick={()=>growSnake(3,2)}>Grow snake</button>
             {board.map((row, index)=>(
                 <div key={index} className="row">{
                     row.map((cell, cell_index)=>(
