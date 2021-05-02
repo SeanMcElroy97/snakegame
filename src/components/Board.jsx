@@ -31,15 +31,8 @@ export default function Board({score, setScore, endGame}) {
 
 
     function slither(){
-        console.log(snake)
-        let current = snake.head
-        const snakeCs= new Set()
-        while (current!=null){
-            snakeCs.add(current.lerow+""+current.lecolumn)
-            current=current.next
-        }
-        setSnakeCells(snakeCs)
 
+        // New snake head
         const nextCellCol=4
         const nextCellRow=3
         const nuSnakeHead =new LinkedListNode(nextCellRow, nextCellCol)
@@ -51,6 +44,13 @@ export default function Board({score, setScore, endGame}) {
         snake.head=nuSnakeHead
         
 
+        let current = snake.head
+        const snakeCs= new Set()
+        while (current!=null){
+            snakeCs.add(current.lerow+""+current.lecolumn)
+            current=current.next
+        }
+        setSnakeCells(snakeCs)
         
         console.log(tailSendLocationRow+""+tailSendLocationCol)
     }
