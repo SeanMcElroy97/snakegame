@@ -38,8 +38,21 @@ export default function Board({score, setScore, endGame}) {
             snakeCs.add(current.lerow+""+current.lecolumn)
             current=current.next
         }
-
         setSnakeCells(snakeCs)
+
+        const nextCellCol=4
+        const nextCellRow=3
+        const nuSnakeHead =new LinkedListNode(nextCellRow, nextCellCol)
+        nuSnakeHead.next=snake.head
+
+        const tailSendLocationRow=snake.tail.lerow
+        const tailSendLocationCol=snake.tail.lecolumn
+
+        snake.head=nuSnakeHead
+        
+
+        
+        console.log(tailSendLocationRow+""+tailSendLocationCol)
     }
 
 
@@ -49,6 +62,8 @@ export default function Board({score, setScore, endGame}) {
         const currentTail = snake.tail;
         currentTail.next=nuevoSnakeTail;
         snake.tail=nuevoSnakeTail
+        snake.tail.prev=currentTail
+
         // console.log(snake)
         
     }
@@ -77,6 +92,7 @@ export default function Board({score, setScore, endGame}) {
     return (
         <div className="boardContainer">
             <button onClick={()=>growSnake(3,2)}>Grow snake</button>
+
             {board.map((row, index)=>(
                 <div key={index} className="row">{
                     row.map((cell, cell_index)=>(
