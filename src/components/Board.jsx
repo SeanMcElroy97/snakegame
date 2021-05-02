@@ -1,15 +1,15 @@
 import React, {useState, useEffect, useRef} from 'react'
 import LinkedList from '../LinkedList'
+import LinkedListNode from '../LinkedListNode'
 
-export default function Board({score, setScore}) {
+export default function Board({score, setScore, endGame}) {
     const [board, setBoard]= useState(makeBoard(10))
     const [snakeCells, setSnakeCells]= useState(new Set(['33']));
     const [snake, setSnake] = useState(new LinkedList(3,3));
     const [foodCell, setFoodCell] = useState("36")
     const [currentDirection , setCurrentDirection]=useState("ArrowRight")
-    
+    const [speed, setSpeed] = useState(1000)
     let gameOver=false;
-    let speed = 1000;
 
 
     useEffect(() => {
@@ -27,41 +27,55 @@ export default function Board({score, setScore}) {
 
     useInterval(() => {
         slither();
-      }, 1000);
+      }, speed);
 
 
     const slither = ()=>{
-        let currentSnakeHead = snake.head;
-        // Get direction
-        if (currentDirection=="ArrowRight"){
-            currentSnakeHead.lecolumn=currentSnakeHead.lecolumn+1
-        }
-        if (currentDirection=="ArrowLeft"){
-            currentSnakeHead.lecolumn=currentSnakeHead.lecolumn-1
-        }
-        if (currentDirection=="ArrowDown"){
-            currentSnakeHead.lerow=currentSnakeHead.lerow+1
-        }
-        if (currentDirection=="ArrowUp"){
-            currentSnakeHead.lerow=currentSnakeHead.lerow-1
-        }
+
         
-        if (currentSnakeHead.lecolumn>9 || currentSnakeHead.lerow>9 || currentSnakeHead.lecolumn<0 || currentSnakeHead.lerow<0){
-            alert('gameover')
+        let newHeadRow=snake.head.lerow;
+        let newHeadCol=snake.head.lecolumn;
+
+        if (currentDirection=="ArrowRight"){
+            newHeadCol+=1
         }
 
-        console.log("current_dir" + currentDirection)
-        setSnakeCells(new Set([currentSnakeHead.lerow+""+currentSnakeHead.lecolumn]))
+        const nextSnakeHead = new LinkedListNode(newHeadRow, newHeadCol)
 
-        console.log(snakeCells)
-        if(currentSnakeHead.lerow+""+currentSnakeHead.lecolumn == foodCell){
+
+        
+        if(nextSnakeHead.lerow+""+nextSnakeHead.lecolumn == foodCell){
             eatFood()
+            growSnake(snake.tail.lerow, snake.tail.lecolumn)
         }
+
+
+        snake.head=nextSnakeHead
+        
+        const scells = new Set(snakeCells);
+        scells.delete(snake.tail.lerow+""+snake.tail.lecolumn)
+        scells.add(snake.head.lerow+""+snake.head.lecolumn);
+        setSnakeCells(scells)
+
+        snake.tail = snake.tail.next;
+        if (snake.tail === null) snake.tail = snake.head;
+        console.log(snake)
+    }
+
+
+    function growSnake(row, col){
+        console.log("r"+row + "c"+col)
+        const nuevoSnakeTail =new LinkedListNode(row, col)
+        const currentTail = snake.tail;
+        snake.tail = nuevoSnakeTail;
+        snake.tail.next = currentTail;
+    
+        snakeCells.add(nuevoSnakeTail.lerow+""+nuevoSnakeTail.lecolumn);
+        
     }
 
     function eatFood(){
         // Grow snake
-        console.log("Eat food")
         setScore(score+1)
         generateFood()
     }

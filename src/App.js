@@ -7,11 +7,12 @@ import React, {useState} from 'react'
 
 function App() {
   const [score, setScore] = useState(0)
+  const [gameOver, endGame]= useState(false)
   return (
     <>
     <Header/>
     <Counter score={score}/>
-    <Board score={score} setScore={setScore}/>
+    {gameOver?<button onClick={()=> endGame(false)}>Play Again</button>:<Board score={score} setScore={setScore} endGame={endGame}/>}
     </>
   )
 }
