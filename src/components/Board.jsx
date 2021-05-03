@@ -12,13 +12,14 @@ export default function Board({score, setScore, endGame}) {
     let gameOver=false;
 
 
+
     useEffect(() => {
         window.addEventListener('keydown', e => {
             // ArrowUp
             // ArrowDown
             // ArrowLeft
             // ArrowRight
-            console.log(e.key)
+            // console.log(e.key)
             if (e.key=="ArrowUp" || e.key=="ArrowDown" || e.key=="ArrowLeft" || e.key=="ArrowRight"){
                 setCurrentDirection(e.key)
             }
@@ -27,6 +28,7 @@ export default function Board({score, setScore, endGame}) {
 
     useEffect(() => {
         setSnake(new LinkedList(3,3))
+        setScore(0)
     }, []);
 
     useInterval(() => {
@@ -42,8 +44,20 @@ export default function Board({score, setScore, endGame}) {
         if (currentDirection=="ArrowRight"){
             nuHeadcol=nuHeadcol+1
         }
+        if (currentDirection=="ArrowDown"){
+            nuHeadrow=nuHeadrow+1
+        }
+        if (currentDirection=="ArrowLeft"){
+            nuHeadcol=nuHeadcol-1
+        }
+        if (currentDirection=="ArrowUp"){
+            nuHeadrow=nuHeadrow-1
+        }
         const nuHead=new LinkedListNode(nuHeadrow, nuHeadcol)
 
+        if(nuHead.lerow >9 || nuHead.lerow<0 || nuHead.lecolumn>9 || nuHead.lecolumn<0 || snakeCells.has(nuHead.lerow+""+nuHead.lecolumn)){
+            endGame(true)
+        }
         // Set new head
         nuHead.next=snake.head
         snake.head=nuHead
@@ -59,7 +73,7 @@ export default function Board({score, setScore, endGame}) {
         
         const snkTR=snake.tail.lerow
         const snkTC=snake.tail.lecolumn
-        console.log("Tail r "+snkTR + " Tail c" + snkTC)
+        // console.log("Tail r "+snkTR + " Tail c" + snkTC)
         // Set tail
         snake.tail=current
 
@@ -78,7 +92,7 @@ export default function Board({score, setScore, endGame}) {
         }
         setSnakeCells(scells)
 
-        console.log(snake)
+        // console.log(snake)
     }
 
 
@@ -95,6 +109,15 @@ export default function Board({score, setScore, endGame}) {
         // Grow snake
         setScore(score+1)
         generateFood()
+        if(score>=1 && score<4){
+            setSpeed(500)
+        }
+        if(score>=4 && score<9){
+            setSpeed(200)
+        }
+        if(score>=9){
+            setSpeed(150)
+        }
         // growSnake()
     }
 
@@ -119,7 +142,7 @@ export default function Board({score, setScore, endGame}) {
             {board.map((row, index)=>(
                 <div key={index} className="row">{
                     row.map((cell, cell_index)=>(
-                        <div key={cell_index} className={`cell   ${snakeCells.has(''+index+''+cell_index)? 'snake-cell': foodCell==index+""+cell_index? 'food': ''}`}>{index + '' + cell_index}</div>
+                        <div key={cell_index} className={`cell   ${snakeCells.has(''+index+''+cell_index)? 'snake-cell': foodCell==index+""+cell_index? 'food': ''}`}></div>
                     ))
                 }
                 </div>
