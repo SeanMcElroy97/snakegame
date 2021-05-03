@@ -20,6 +20,7 @@ export default function Board({score, setScore, endGame}) {
             // ArrowLeft
             // ArrowRight
             // console.log(e.key)
+            e.preventDefault()
             if (e.key=="ArrowUp" || e.key=="ArrowDown" || e.key=="ArrowLeft" || e.key=="ArrowRight"){
                 setCurrentDirection(e.key)
             }
@@ -29,6 +30,7 @@ export default function Board({score, setScore, endGame}) {
     useEffect(() => {
         setSnake(new LinkedList(3,3))
         setScore(0)
+        window.scrollTo(0,document.body.scrollHeight);
     }, []);
 
     useInterval(() => {

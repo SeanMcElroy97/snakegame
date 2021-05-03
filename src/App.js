@@ -14,6 +14,7 @@ function App() {
   useEffect(()=>{
     const storedHighScore=localStorage.getItem('highScore')
     if(storedHighScore != null) setHighScore(storedHighScore)
+    
   }, [])
 
   if (score>highScore){
@@ -22,14 +23,16 @@ function App() {
     // Set local stoprage
   }
   return (
-    <div className="gameContainer">
-    <Header/>
-    <h3 className="highScoretext">High score</h3>
-    <Counter score={highScore}/>
-    <h3 className="highScoretext">Current score</h3>
-    <Counter score={score}/>
-    {gameOver?<GameOver endGame={endGame}/>:<Board score={score} setScore={setScore} endGame={endGame}/>}
-    </div>
+    <>
+      <Header/>
+      <div className="gameContainer">
+      <h3 className="highScoretext">High score</h3>
+      <Counter score={highScore}/>
+      <h3 className="highScoretext">Current score</h3>
+      <Counter score={score}/>
+      {gameOver?<GameOver endGame={endGame}/>:<Board score={score} setScore={setScore} endGame={endGame}/>}
+      </div>
+    </>
   )
 }
 
