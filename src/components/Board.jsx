@@ -25,46 +25,69 @@ export default function Board({score, setScore, endGame}) {
         });
         }, []);
 
+    useEffect(() => {
+        setSnake(new LinkedList(3,3))
+    }, []);
+
     useInterval(() => {
         slither();
       }, speed);
 
 
     function slither(){
-
-        // New snake head
-        const nextCellCol=4
-        const nextCellRow=3
-        const nuSnakeHead =new LinkedListNode(nextCellRow, nextCellCol)
-        nuSnakeHead.next=snake.head
-
-        const tailSendLocationRow=snake.tail.lerow
-        const tailSendLocationCol=snake.tail.lecolumn
-
-        snake.head=nuSnakeHead
         
+        // Create new head
+        let nuHeadrow=snake.head.lerow
+        let nuHeadcol=snake.head.lecolumn
+        if (currentDirection=="ArrowRight"){
+            nuHeadcol=nuHeadcol+1
+        }
+        const nuHead=new LinkedListNode(nuHeadrow, nuHeadcol)
 
-        let current = snake.head
-        const snakeCs= new Set()
-        while (current!=null){
-            snakeCs.add(current.lerow+""+current.lecolumn)
+        // Set new head
+        nuHead.next=snake.head
+        snake.head=nuHead
+
+        // Delete tail head
+        let current=snake.head
+        while(current.next!=snake.tail){
             current=current.next
         }
-        setSnakeCells(snakeCs)
+        // Found new tail
+        // oldTailRow=cur
+        current.next=null
         
-        console.log(tailSendLocationRow+""+tailSendLocationCol)
+        const snkTR=snake.tail.lerow
+        const snkTC=snake.tail.lecolumn
+        console.log("Tail r "+snkTR + " Tail c" + snkTC)
+        // Set tail
+        snake.tail=current
+
+        // Check if eating is happening
+        if(snake.head.lerow+""+snake.head.lecolumn==foodCell){
+            eatFood()
+            growSnake(snkTR, snkTC)
+        }
+
+        // Update the ui
+        let curr= snake.head
+        const scells=new Set()
+        while(curr!=null){
+            scells.add(curr.lerow+""+curr.lecolumn)
+            curr=curr.next
+        }
+        setSnakeCells(scells)
+
+        console.log(snake)
     }
 
 
     function growSnake(row, col){
-        console.log("r"+row + "c"+col)
+        // console.log("r"+row + "c"+col)
         const nuevoSnakeTail =new LinkedListNode(row, col)
         const currentTail = snake.tail;
         currentTail.next=nuevoSnakeTail;
         snake.tail=nuevoSnakeTail
-        snake.tail.prev=currentTail
-
-        // console.log(snake)
         
     }
 
@@ -72,6 +95,7 @@ export default function Board({score, setScore, endGame}) {
         // Grow snake
         setScore(score+1)
         generateFood()
+        // growSnake()
     }
 
 
@@ -91,7 +115,6 @@ export default function Board({score, setScore, endGame}) {
 
     return (
         <div className="boardContainer">
-            <button onClick={()=>growSnake(3,2)}>Grow snake</button>
 
             {board.map((row, index)=>(
                 <div key={index} className="row">{
