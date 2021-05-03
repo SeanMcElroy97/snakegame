@@ -138,7 +138,7 @@ export default function Board({score, setScore, endGame}) {
 
     return (
         <div className="boardContainer">
-
+            <div className="board">
             {board.map((row, index)=>(
                 <div key={index} className="row">{
                     row.map((cell, cell_index)=>(
@@ -147,6 +147,7 @@ export default function Board({score, setScore, endGame}) {
                 }
                 </div>
             ))}
+            </div>
         </div>
     )
 
